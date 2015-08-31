@@ -1113,7 +1113,8 @@ class Agents:
 
                 try:
                     # verify, decrypt and depad the packet
-                    packet = encryption.aes_decrypt_and_verify(sessionKey, postData)
+                    #packet = zlib.decompress(packet, 16 + zlib.MAX_WBITS)
+                    packet = encryption.aes_decrypt_and_verify(sessionKey, zlib.decompress(postData, 16 + zlib.MAX_WBITS))
 
                     # update the client's last seen time
                     self.update_agent_lastseen(sessionID)

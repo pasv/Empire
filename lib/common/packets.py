@@ -23,7 +23,7 @@ builds tasking packets and parses result packets
 """
 
 
-import struct, time, base64
+import struct, time, base64, zlib
 
 
 # 0         -> error
@@ -105,7 +105,13 @@ def build_task_packet(taskName, data):
 
     # data.encode('ascii',errors='ignore')
     return taskID + counter + length + data.encode('ascii',errors='ignore')
-   
+
+# Support other types of compression or other options as needed
+def decompress_packet(packet):
+    """
+    Decompress a packet from an agent with zlib
+    """
+    return zlib.decompress(packet, 16 + zlib.MAX_WBITS)
 
 def parse_result_packet(packet, offset=0):
     """
@@ -114,6 +120,7 @@ def parse_result_packet(packet, offset=0):
     Returns a tuple with (responseName, counter, length, data, remainingData)
     """
     try:
+        #packet = decompress_packet(packet)
         responseID = struct.unpack('=L', packet[0+offset:4+offset])[0]
         counter = struct.unpack('=L', packet[4+offset:8+offset])[0]
         length = struct.unpack('=L', packet[8+offset:12+offset])[0]
