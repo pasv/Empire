@@ -1,0 +1,32 @@
+TODO module_dev - delete before pulling, not needed
+
+-situational_awareness/host/appenum.py 
+    - take existing code/port it for compatibility
+    - ensure table output is clean
+    - Implement 'Get-Process -FileinfoVersion' and install path detect if uninstall key not present
+    - Common interesting config files? - different module...
+
+-situational_awareness/host/windowenum.py  - identify who this user is/what they're doing - perhaps make 'monitor mode' ? 
+    - Enumerate open windows and their properties for current user's desktop
+
+-situational_awareness/host/proxyenum.py   - to know what we're up against
+    - Enumerate proxy config from registry
+    - Optionally connect to proxy or throw an error condition (invalid host header,etc) to identify it (simply shove out html or regex for websense/bluecoat/etc)
+    - Optionally Provide a list of URLs to test for whitelist/content filtering (how 2 find baseline?)
+    - Optionally check for SSL inspection - need a known CA for a common site and the ability to obtain its parameters thru winhttp
+
+-situational_awareness/network/friendfinder.py   - quick recon, high stealth
+    - arp -a, netstat -a, get-computerdetails(parse logons) = input
+    - exclude domain controllers!
+    - output=
+    - smbscanner on the hosts to determine if login is possible for each host
+    - sharefinder (might be redundant^ lol) on hosts that are leftover
+    - OpenSCMangager() on hostlist identified
+    - optionally stealth userhunter against usernames identified in get-computerdetails?
+    - optionally check list of ports on identified hosts
+=== module chaining - is it feasible? Needs a cache to avoid overusage of existing channel for no reason..==
+
+-situational_awareness/network/pingscan.py
+	- check if ping is enabled first by pinging loopback
+	- optional: specify '*' to do subnets ie: 10.13.*.1 or 192.168.1.*  - 1-254
+	- Use Test-Connection if we're running PS 3.0 or higher, if 2.0 use the binary... :(
