@@ -1,5 +1,14 @@
 TODO module_dev - delete before pulling, not needed
 
+-situational_awareness/host/paranoia.py
+    - Run in a loop forever and check for:
+     - exe running a USB - highly indicative of IR doing a memdump
+     - list of processes: sysinternals, known IR tools, wireshark, etc.
+     - check to see if a user from a list of groups (DA,IT,etc) has logged in - and what procs they're running
+     - Check for a list of PIDs and their CPU/Memory usage (IE: IR agents like Google's GRR) to see if they reach past a threshold
+    - optionally report then peace the fuck out if any conditions are seen (taskkill /IM powershell.exe ?)
+     -have this option be a cleanup script read at iex(gc $thelocalpath) - user has to set this up manually
+
 -situational_awareness/host/appenum.py 
     - take existing code/port it for compatibility
     - ensure table output is clean
