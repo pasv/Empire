@@ -51,3 +51,8 @@ TODO module_dev - delete before pulling, not needed
   - references:
   https://github.com/clymb3r/PowerShell/blob/master/Get-ComputerDetails/Get-ComputerDetails.ps1
   https://github.com/pdxcat/Get-LogonHistory/blob/master/Get-LogonHistory.ps1
+
+-privesc/bypassuac_wmi_reflect
+ - invoke-wmi on a remote host to invoke wmi back onto agents host to shove a stager back into a high integrity process
+ - only requires LA on a remote host and obviously LA on the agent's system.
+ - must do more testing to see if there are better ways of doing this
