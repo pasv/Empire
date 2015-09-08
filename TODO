@@ -39,3 +39,15 @@ TODO module_dev - delete before pulling, not needed
 	- check if ping is enabled first by pinging loopback
 	- optional: specify '*' to do subnets ie: 10.13.*.1 or 192.168.1.*  - 1-254
 	- Use Test-Connection if we're running PS 3.0 or higher, if 2.0 use the binary... :(
+
+-situational_awareness/network/pivotfinder.py
+   - use win32_pingstatus through remote WMI to check a remote hosts connectivity to another remote host: Get-WmiObject Win32_pingStatus -ComputerName 10.1.0.128 -f "Address='10.1.0.130'"
+     - many to many check: cycle through multiple servers (WMI) have them ping multiple servers
+   - use clymb3r's Get-Computerdetails to get saved RDP profiles for each user.
+   - handle CIDRs
+
+-situational_awareness/network/historic_userfinder
+  - use Get-Eventlog -Logname Security -computername host -After ((Get-Date).AddDays(-whatevernumbermaybeadayoraweek)) 
+  - references:
+  https://github.com/clymb3r/PowerShell/blob/master/Get-ComputerDetails/Get-ComputerDetails.ps1
+  https://github.com/pdxcat/Get-LogonHistory/blob/master/Get-LogonHistory.ps1
